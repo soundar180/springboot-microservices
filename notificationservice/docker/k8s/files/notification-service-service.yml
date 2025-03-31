@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: notification-service
+spec:
+  selector:
+    app: notification-service
+  ports:
+    - protocol: TCP
+      port: 12304
+      targetPort: 12304
+    - protocol: TCP
+      port: 12305
+      targetPort: 12305

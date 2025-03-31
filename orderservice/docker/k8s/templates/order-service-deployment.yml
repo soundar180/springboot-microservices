@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order-service
+  template:
+    metadata:
+      labels:
+        app: order-service
+        version: {image_version}
+    spec:
+      containers:
+        - name: order-service
+          image: {image_name}
+          env:
+            - name: SPRING_RABBITMQ_HOST
+              value: "rabbitmq"
+          ports:
+            - containerPort: {server.port}
+              protocol: TCP
+            - containerPort: {server.admin.port}
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /order-service/admin/v1/ping
+              port: {server.admin.port}
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 30
+          livenessProbe:
+            httpGet:
+              path: /order-service/admin/v1/ping
+              port: {server.admin.port}
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            timeoutSeconds: 30

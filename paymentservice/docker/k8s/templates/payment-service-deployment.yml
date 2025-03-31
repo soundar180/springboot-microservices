@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: payment-service
+  template:
+    metadata:
+      labels:
+        app: payment-service
+        version: {image_version}
+    spec:
+      containers:
+        - name: payment-service
+          image: {image_name}
+          ports:
+            - containerPort: {server.port}
+              protocol: TCP
+            - containerPort: {server.admin.port}
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /payment-service/admin/v1/ping
+              port: {server.admin.port}
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 30
+          livenessProbe:
+            httpGet:
+              path: /payment-service/admin/v1/ping
+              port: {server.admin.port}
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            timeoutSeconds: 30

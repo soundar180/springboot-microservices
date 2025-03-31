@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-service
+spec:
+  selector:
+    app: payment-service
+  ports:
+    - protocol: TCP
+      port: 12302
+      name: paymentservice
+      targetPort: 12302
+    - protocol: TCP
+      port: 12303
+      name: paymentservice-admin
+      targetPort: 12303

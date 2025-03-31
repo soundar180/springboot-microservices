@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: payment-service
+  template:
+    metadata:
+      labels:
+        app: payment-service
+        version: 1.0.0
+    spec:
+      containers:
+        - name: payment-service
+          image: payment-service:1.0.0
+          ports:
+            - containerPort: 12302
+              protocol: TCP
+            - containerPort: 12303
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /payment-service/admin/v1/ping
+              port: 12303
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 30
+          livenessProbe:
+            httpGet:
+              path: /payment-service/admin/v1/ping
+              port: 12303
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            timeoutSeconds: 30
